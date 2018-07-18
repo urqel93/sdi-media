@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {JSON_API, USERS} from './routes';
-import {Observable, timer} from 'rxjs';
+import {Observable, timer, Subject} from 'rxjs';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {map} from 'rxjs/operators';
 
@@ -40,6 +40,21 @@ export class ApiService {
 
   getSize(): number {
     return (this.size / 1024);
+  }
+
+  testRequests(url, numOfRequests) {
+
+    const subject = new Subject();
+
+    for (let i = 1; i <= numOfRequests; i++) {
+    const start_time = performance.now();
+      this.http.get(url).subscribe(response => {
+        subject.next(performance.now() - start_time);
+      });
+    }
+
+    return subject;
+
   }
 
   getImage(url: string): Observable<SafeUrl> {
