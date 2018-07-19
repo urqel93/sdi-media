@@ -51,18 +51,19 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
     this.api.getDatabaseData(o.database, o.limit).subscribe(res => {
         const time = (performance.now() - start);
         const size = (res.headers.get('Content-Length') / 1024);
-        this.changeData(time, size, o.limit);
+        this.changeData(time, size, o.limit, o.database);
       }, error => {
         console.log(error);
       },
     );
   }
 
-  changeData(time, size, number) {
+  changeData(time, size, number, database) {
     this.lineChartData[0].data.push(time.toFixed(3));
     this.lineChartData[1].data.push(size.toFixed(3));
     this.lineChartData[2].data.push(number);
-    this.lineChartLabels.push(this.lineChartData[0].data.length - 1);
+    const db = database === 'dynamo' ? 'DynamoDB' : 'Aurora';
+    this.lineChartLabels.push(this.lineChartData[0].data.length - 1 + ' - ' + db);
     this.chart.chart.update();
   }
 
