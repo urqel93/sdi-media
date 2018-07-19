@@ -22,11 +22,11 @@ export class RestTestingComponent implements OnInit, OnDestroy {
   constructor(private api: ApiService) { }
 
   public lineChartData: Array<CharData> = [
-    { data: [], label: 'Request time in miliseconds' },
-    { data: [], label: 'Size in kilobyte' },
+    { data: [0], label: 'Request time in miliseconds' },
+    { data: [0], label: 'Size in kilobyte' },
   ];
 
-  public lineChartLabels: Array<any> = [];
+  public lineChartLabels: Array<any> = [0];
   public lineChartOptions: any = {
     responsive: true,
     scales: {
@@ -37,37 +37,28 @@ export class RestTestingComponent implements OnInit, OnDestroy {
       }]
     }
   };
-  public lineChartColors: Array<any> = [
-    {
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    }
-  ];
   public lineChartLegend: Boolean = true;
   public lineChartType: String = 'line';
 
-  lastResults = [];
   subscription: Subscription;
-
-
+  numOfRequests = 50;
+  clearData() {
+    this.lineChartData[0].data = [0];
+    this.lineChartData[1].data = [0];
+    this.lineChartLabels = [0];
+  }
 
   makeTest(requestsAmount = 1, requestDB = 'aurora') {
-    const requestRecords = 10;
-    console.log(`req amount: ${requestsAmount} \n reqRecords: ${requestRecords} \n reqDatabase ${requestDB}`);
     const arrOfResults = [];
-    this.subscription = this.api.testRequests(requestsAmount, requestRecords, requestDB).subscribe(
+    this.subscription = this.api.testRequests(requestsAmount, 5, requestDB).subscribe(
       result => {
         arrOfResults.push(result);
         if (arrOfResults.length === +requestsAmount) {
           this.lineChartData[0].data.push(arrOfResults[arrOfResults.length - 1].time);
           this.lineChartData[1].data.push(arrOfResults[arrOfResults.length - 1].weight * arrOfResults.length / 1024);
-          this.lineChartLabels.push(arrOfResults.length + '(' + requestDB + ')');
+          this.lineChartLabels.push(arrOfResults.length + ' - ' + (requestDB === 'aurora' ? 'Aurora' : 'DynamoDB'));
+          this.chart.chart.update();
         }
-        this.chart.chart.update();
       },
       err => console.error(err),
       () => console.log('completed')

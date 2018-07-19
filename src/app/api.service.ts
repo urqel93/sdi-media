@@ -49,7 +49,6 @@ export class ApiService {
     for (let i = 1; i <= numOfRequests; i++) {
       const start_time = performance.now();
       this.http.get(BASE_URL + DATABASE + db + LIMIT + numOfRecords, {observe: 'response'}).subscribe((response) => {
-        console.log();
         subject.next({
           time: performance.now() - start_time,
           weight: response.headers.get('Content-Length')
@@ -67,7 +66,6 @@ export class ApiService {
     return this.http.get(url, {responseType: 'blob'}).pipe(map(response => {
       this.setTime(performance.now() - start_time);
       this.setSize(response.size);
-      console.log(response);
       return this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response));
     }));
   }
