@@ -5,18 +5,22 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {ChartsModule} from 'ng2-charts';
-import { RestTestingComponent } from './rest-testing/rest-testing.component';
+import {RestTestingComponent} from './rest-testing/rest-testing.component';
+import {DatabaseTestingComponent} from './database-testing/database-testing.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RestTestingComponent
+    RestTestingComponent,
+    DatabaseTestingComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ChartsModule
+    ChartsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

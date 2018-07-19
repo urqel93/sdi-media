@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {JSON_API, USERS} from './routes';
+import {BASE_URL, DATABASE, JSON_API, LIMIT, USERS} from './routes';
 import {Observable, timer, Subject} from 'rxjs';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {map} from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class ApiService {
     const subject = new Subject();
 
     for (let i = 1; i <= numOfRequests; i++) {
-    const start_time = performance.now();
+      const start_time = performance.now();
       this.http.get(url).subscribe(response => {
         subject.next(performance.now() - start_time);
       });
@@ -69,5 +69,9 @@ export class ApiService {
 
   getRegion(): Observable<any> {
     return this.http.get(window.location.href + '/region.json', {headers: this.headers});
+  }
+
+  getDatabaseData(db: string, limit: number): Observable<any> {
+    return this.http.get(BASE_URL + DATABASE + db + LIMIT + limit);
   }
 }

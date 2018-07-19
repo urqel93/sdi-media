@@ -5,34 +5,11 @@
 <!--</ul>-->
 <div></div>
 <div class="col-md-12">
-  <h1 style="color: white">Availability Zone: {{region}}</h1>
   <div class="row">
-    <div class="col-md-5">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Request time to file size ratio</h5>
-          <button type="button" class="btn btn-primary" (click)="getImage()">Get new request</button>
-          <div style="display: block;">
-            <canvas baseChart width="300" height="300"
-                    [datasets]="lineChartData"
-                    [labels]="lineChartLabels"
-                    [options]="lineChartOptions"
-                    [colors]="lineChartColors"
-                    [legend]="lineChartLegend"
-                    [chartType]="lineChartType"
-                    (chartHover)="chartHovered($event)"
-                    (chartClick)="chartClicked($event)"
-            ></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2">
-    </div>
-    <div class="col-md-5">
-      <img class="image" [src]="imgSrc | async" (click)="getImage()">
-    </div>
+    <img src="../assets/img/logo.png">
+    <h1 style="color: white">Availability Zone: {{region}}</h1>
   </div>
+  <databse-testing></databse-testing>
 </div>
 <app-rest-testing></app-rest-testing>
 
