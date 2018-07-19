@@ -26,7 +26,7 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
   public lineChartData: Array<CharData> = [
     {data: [0], label: 'Request time in miliseconds'},
     {data: [1], label: 'Response size in kilobytes'},
-    {data: [0], label: 'Number of requests'}];
+    {data: [0], label: 'Number of records'}];
 
   public lineChartLabels: Array<any> = [0];
   public lineChartOptions: any = {responsive: true};
@@ -47,6 +47,7 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
 
   onSubmit(form) {
     const o = this.dbOption;
+    o.limit = o.limit > 100000 ? 100000 : o.limit;
     const start = performance.now();
     this.api.getDatabaseData(o.database, o.limit).subscribe(res => {
         const time = (performance.now() - start);

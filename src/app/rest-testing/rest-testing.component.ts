@@ -23,7 +23,7 @@ export class RestTestingComponent implements OnInit, OnDestroy {
 
   public lineChartData: Array<CharData> = [
     { data: [0], label: 'Request time in miliseconds' },
-    { data: [0], label: 'Size in kilobyte' },
+    { data: [0], label: 'Response size in kilobytes' },
   ];
 
   public lineChartLabels: Array<any> = [0];
