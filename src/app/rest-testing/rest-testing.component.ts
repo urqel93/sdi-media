@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AppURLs } from '../AppURLs';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ApiService } from '../api.service';
 import { BaseChartDirective } from 'ng2-charts';
+import { Subscription } from 'rxjs';
 
 interface CharData {
   data: Array<number>;
@@ -14,7 +14,7 @@ interface CharData {
   templateUrl: './rest-testing.component.html',
   styleUrls: ['./rest-testing.component.scss']
 })
-export class RestTestingComponent implements OnInit {
+export class RestTestingComponent implements OnInit, OnDestroy {
 
   @ViewChild(BaseChartDirective)
   public chart: BaseChartDirective;
@@ -22,7 +22,9 @@ export class RestTestingComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   public lineChartData: Array<CharData> = [
-    { data: [], label: 'Request time in miliseconds' }];
+    { data: [], label: 'Request time in miliseconds' },
+    { data: [], label: 'Size in kilobyte' },
+  ];
 
   public lineChartLabels: Array<any> = [];
   public lineChartOptions: any = {
@@ -48,18 +50,37 @@ export class RestTestingComponent implements OnInit {
   public lineChartLegend: Boolean = true;
   public lineChartType: String = 'line';
 
+  lastResults = [];
+  subscription: Subscription;
 
-  makeTest(requestsAmount) {
-    console.log(requestsAmount);
-    this.api.testRequests(AppURLs.TEST_URL, requestsAmount).subscribe(result => {
-      console.log(result);
-      this.lineChartData[0].data.push(+result);
-      this.lineChartLabels.push(this.lineChartLabels.length + 1);
-      this.chart.chart.update();
-    });
+
+
+  makeTest(requestsAmount = 1, requestDB = 'aurora') {
+    const requestRecords = 10;
+    console.log(`req amount: ${requestsAmount} \n reqRecords: ${requestRecords} \n reqDatabase ${requestDB}`);
+    const arrOfResults = [];
+    this.subscription = this.api.testRequests(requestsAmount, requestRecords, requestDB).subscribe(
+      result => {
+        arrOfResults.push(result);
+        console.log(arrOfResults);
+        if (arrOfResults.length === +requestsAmount) {
+          this.lineChartData[0].data.push(arrOfResults[arrOfResults.length - 1].time);
+          this.lineChartData[1].data.push(arrOfResults[arrOfResults.length - 1].weight * arrOfResults.length / 1024);
+          this.lineChartLabels.push(arrOfResults.length + '(' + requestDB + ')');
+        }
+        this.chart.chart.update();
+      },
+      err => console.error(err),
+      () => console.log('completed')
+    );
+
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

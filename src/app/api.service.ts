@@ -42,14 +42,18 @@ export class ApiService {
     return (this.size / 1024);
   }
 
-  testRequests(url, numOfRequests) {
+  testRequests(numOfRequests, numOfRecords, db): Subject<any> {
 
     const subject = new Subject();
 
     for (let i = 1; i <= numOfRequests; i++) {
       const start_time = performance.now();
-      this.http.get(url).subscribe(response => {
-        subject.next(performance.now() - start_time);
+      this.http.get(BASE_URL + DATABASE + db + LIMIT + numOfRecords, {observe: 'response'}).subscribe((response) => {
+        console.log();
+        subject.next({
+          time: performance.now() - start_time,
+          weight: response.headers.get('Content-Length')
+        });
       });
     }
 
