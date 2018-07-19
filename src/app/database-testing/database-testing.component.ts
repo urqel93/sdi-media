@@ -14,7 +14,7 @@ interface CharData {
 })
 
 export class DatabaseTestingComponent implements OnInit, AfterViewInit {
-  options = {
+  dbOption = {
     database: '',
     limit: 10
   };
@@ -25,20 +25,11 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
 
   public lineChartData: Array<CharData> = [
     {data: [0], label: 'Request time in miliseconds'},
-    {data: [1], label: 'Response size in kilobytes'}];
+    {data: [1], label: 'Response size in kilobytes'},
+    {data: [0], label: 'Number of requests'}];
 
   public lineChartLabels: Array<any> = [0];
   public lineChartOptions: any = {responsive: true};
-  public lineChartColors: Array<any> = [
-    { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    }
-  ];
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'line';
 
@@ -55,20 +46,22 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(form) {
-    const o = this.options;
+    const o = this.dbOption;
     const start = performance.now();
     this.api.getDatabaseData(o.database, o.limit).subscribe(res => {
-      this.api.setTime(performance.now() - start);
-      this.api.setSize(res.size);
-      console.log(res.getResponseHeader('Content-Length'));
-    });
-    this.changeData(this.api.getTime(), this.api.getSize());
-    // form.reset();
+        const time = (performance.now() - start);
+        const size = (res.headers.get('Content-Length') / 1024);
+        this.changeData(time, size, o.limit);
+      }, error => {
+        console.log(error);
+      },
+    );
   }
 
-  changeData(time, size) {
+  changeData(time, size, number) {
     this.lineChartData[0].data.push(time.toFixed(3));
     this.lineChartData[1].data.push(size.toFixed(3));
+    this.lineChartData[2].data.push(number);
     this.lineChartLabels.push(this.lineChartData[0].data.length - 1);
     this.chart.chart.update();
   }

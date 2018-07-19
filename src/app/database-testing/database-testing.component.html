@@ -8,7 +8,7 @@
           <select class="custom-select my-1 mr-sm-2"
                   id="select"
                   name="database"
-                  [(ngModel)]="options.database"
+                  [(ngModel)]="dbOption.database"
                   #database="ngModel"
                   required>
             <option disabled>Choose...</option>
@@ -19,7 +19,7 @@
                  class="form-control mr-2"
                  placeholder="Limit"
                  name="limit"
-                 [(ngModel)]="options.limit"
+                 [(ngModel)]="dbOption.limit"
                  #limit="ngModel"
                  required
           >
@@ -30,7 +30,6 @@
                   [datasets]="lineChartData"
                   [labels]="lineChartLabels"
                   [options]="lineChartOptions"
-                  [colors]="lineChartColors"
                   [legend]="lineChartLegend"
                   [chartType]="lineChartType"
           ></canvas>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {BASE_URL, DATABASE, JSON_API, LIMIT, USERS} from './routes';
-import {Observable, timer, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {map} from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import {map} from 'rxjs/operators';
 })
 
 export class ApiService {
-  headers = new HttpHeaders({'Content-Type': 'application/json'});
+  headers = new HttpHeaders({'Content-Type': 'application/json', 'Access-Control-Expose-Headers': 'Content-Length'});
   time: number;
   size: number;
 
@@ -63,6 +63,7 @@ export class ApiService {
     return this.http.get(url, {responseType: 'blob'}).pipe(map(response => {
       this.setTime(performance.now() - start_time);
       this.setSize(response.size);
+      console.log(response);
       return this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response));
     }));
   }
@@ -72,6 +73,6 @@ export class ApiService {
   }
 
   getDatabaseData(db: string, limit: number): Observable<any> {
-    return this.http.get(BASE_URL + DATABASE + db + LIMIT + limit);
+    return this.http.get(BASE_URL + DATABASE + db + LIMIT + limit, {headers: this.headers, observe: 'response'});
   }
 }
