@@ -62,7 +62,6 @@ export class RestTestingComponent implements OnInit, OnDestroy {
     this.subscription = this.api.testRequests(requestsAmount, requestRecords, requestDB).subscribe(
       result => {
         arrOfResults.push(result);
-        console.log(arrOfResults);
         if (arrOfResults.length === +requestsAmount) {
           this.lineChartData[0].data.push(arrOfResults[arrOfResults.length - 1].time);
           this.lineChartData[1].data.push(arrOfResults[arrOfResults.length - 1].weight * arrOfResults.length / 1024);
