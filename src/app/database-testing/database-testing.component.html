@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Response size to time ratio depending ond chosen databse and records number</h5>
+        <h5 class="card-title">Response size to time ratio depending on chosen database and records number</h5>
         <form class="form-inline" (ngSubmit)="onSubmit(reqform)" #reqform="ngForm">
           <label class="my-1 mr-2" for="select">Database:</label>
           <select class="custom-select my-1 mr-sm-2"
@@ -15,6 +15,7 @@
             <option selected value="dynamo">DynamoDB</option>
             <option value="aurora">Aurora</option>
           </select>
+          <label class="my-1 mr-2" for="limitInput">Number of records:</label>
           <input type="number"
                  class="form-control mr-2"
                  placeholder="Limit"
@@ -22,8 +23,12 @@
                  [(ngModel)]="dbOption.limit"
                  #limit="ngModel"
                  required
+                 id="limitInput"
           >
-          <button type="submit" class="btn btn-primary" [disabled]="!reqform.form.valid">Get new request</button>
+          <button type="submit" class="btn btn-primary mr-2" [disabled]="!reqform.form.valid">Get new request</button>
+          <button type="button" class="btn btn-danger" (click)="clearData()"
+                  [disabled]="this.lineChartLabels.length === 1">Clear chart data
+          </button>
         </form>
         <div style="display: block;">
           <canvas baseChart width="300" height="100"

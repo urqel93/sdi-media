@@ -67,4 +67,14 @@ export class DatabaseTestingComponent implements OnInit, AfterViewInit {
     this.chart.chart.update();
   }
 
+  clearData() {
+    const chart = this.chart.chart;
+    const l = this.lineChartLabels.length;
+    chart.data.labels.splice(1, l);
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.splice(1, l);
+    });
+    chart.update();
+  }
+
 }
