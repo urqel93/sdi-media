@@ -20,12 +20,19 @@ export class ApiService {
 
     for (let i = 1; i <= numOfRequests; i++) {
       const start_time = performance.now();
-      this.http.get(BASE_URL + DATABASE + db + LIMIT + numOfRecords, {observe: 'response'}).subscribe((response) => {
-        subject.next({
-          time: performance.now() - start_time,
-          weight: response.headers.get('Content-Length')
-        });
-      });
+      this.http.get(BASE_URL + DATABASE + db + LIMIT + numOfRecords, {
+        observe: 'response'
+      })
+        .subscribe((response) => {
+          subject.next({
+            time: performance.now() - start_time,
+            weight: response.headers.get('Content-Length')
+          });
+        },
+          err => {
+            if (err.status !== 200) { subject.next(null); }
+          }
+        );
     }
 
     return subject;

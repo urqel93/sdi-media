@@ -54,14 +54,17 @@ export class RestTestingComponent implements OnInit, OnDestroy {
       result => {
         arrOfResults.push(result);
         if (arrOfResults.length === +requestsAmount) {
-          this.lineChartData[0].data.push(arrOfResults[arrOfResults.length - 1].time);
-          this.lineChartData[1].data.push(arrOfResults[arrOfResults.length - 1].weight * arrOfResults.length / 1024);
-          this.lineChartLabels.push(arrOfResults.length + ' - ' + (requestDB === 'aurora' ? 'Aurora' : 'DynamoDB'));
+          const finalArr = [];
+          for (let i = 0; i < arrOfResults.length; i++) {
+            if (arrOfResults[i] !== null) { finalArr.push(arrOfResults[i]); }
+          }
+          this.lineChartData[0].data.push(finalArr[finalArr.length - 1].time);
+          this.lineChartData[1].data.push(finalArr[finalArr.length - 1].weight * finalArr.length / 1024);
+          this.lineChartLabels.push(finalArr.length + ' - ' + (requestDB === 'aurora' ? 'Aurora' : 'DynamoDB'));
           this.chart.chart.update();
         }
       },
-      err => console.error(err),
-      () => console.log('completed')
+      err => console.error(err)
     );
 
   }
